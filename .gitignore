@@ -1,0 +1,18 @@
+# sf CLI state
+.sf/
+.sfdx/
+.localdevserver/
+.sf-results/
+
+# Never commit org keys
+server.key
+*.key
+*.pem
+
+# Tooling
+node_modules/
+coverage/
+.vscode/
+.idea/
+.DS_Store
+*.log

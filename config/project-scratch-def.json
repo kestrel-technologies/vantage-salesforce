@@ -1,0 +1,16 @@
+{
+  "orgName": "Kestrel Vantage scratch",
+  "edition": "Developer",
+  "features": ["EnableSetPasswordInApi", "Communities", "ServiceCloud"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "quoteSettings": {
+      "enableQuote": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  }
+}

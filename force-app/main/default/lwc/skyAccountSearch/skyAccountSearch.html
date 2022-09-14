@@ -1,0 +1,19 @@
+<template>
+    <lightning-card title="Account Search" icon-name="standard:account">
+        <div class="slds-p-horizontal_small">
+            <lightning-input type="search" label="Account name" value={searchTerm} onchange={handleChange}></lightning-input>
+            <template if:true={hasResults}>
+                <ul class="slds-has-dividers_bottom-space slds-m-top_small">
+                    <template for:each={accounts} for:item="acct">
+                        <li key={acct.Id} class="slds-item">
+                            <a href={acct.url}>{acct.Name}</a>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+            <template if:true={error}>
+                <p class="slds-text-color_error slds-m-top_small">{error}</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

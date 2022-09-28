@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title="Contacts" icon-name="standard:contact">
+        <lightning-button slot="actions" label="Export contacts" icon-name="utility:download" onclick={handleExport}></lightning-button>
+        <div class="slds-p-horizontal_small">
+            <template if:true={message}>
+                <p class="slds-text-body_small">{message}</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

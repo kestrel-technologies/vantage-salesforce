@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Area__c</fullName>
+    <externalId>false</externalId>
+    <label>Product Area</label>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Data Cloud</fullName><default>false</default><label>Data Cloud</label></value>
+            <value><fullName>Connect</fullName><default>false</default><label>Connect</label></value>
+            <value><fullName>Insight</fullName><default>false</default><label>Insight</label></value>
+            <value><fullName>Guard</fullName><default>false</default><label>Guard</label></value>
+            <value><fullName>Expert Services</fullName><default>false</default><label>Expert Services</label></value>
+            <value><fullName>Managed Operations</fullName><default>false</default><label>Managed Operations</label></value>
+            <value><fullName>Academy</fullName><default>false</default><label>Academy</label></value>
+            <value><fullName>Portal &amp; Account</fullName><default>false</default><label>Portal &amp; Account</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <type>Picklist</type>
+</CustomField>

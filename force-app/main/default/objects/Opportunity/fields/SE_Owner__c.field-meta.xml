@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SE_Owner__c</fullName>
+    <description>Solutions Engineer; required from Solution Design onward</description>
+    <externalId>false</externalId>
+    <label>SE Owner</label>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>SE Owners</relationshipLabel>
+    <relationshipName>SE_Owned_Opportunities</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

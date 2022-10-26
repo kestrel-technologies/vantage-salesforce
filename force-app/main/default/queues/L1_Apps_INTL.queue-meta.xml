@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <email>queues+l1_apps_intl@vantage.kestrel.example</email>
+    <name>L1 Apps INTL</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>Vantage_Support_Team</publicGroup>
+        </publicGroups>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Case</sobjectType>
+    </queueSobject>
+</Queue>

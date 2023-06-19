@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingGuestRules>
+        <fullName>SKY_Portal_Guest_Case_Visibility</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Knowledge-type cases visible to the public knowledge widget (Skyward 2019)</description>
+        <label>SKY Portal Guest Case Visibility</label>
+        <sharedTo>
+            <guestUser>Vantage_Support_Portal</guestUser>
+        </sharedTo>
+        <criteriaItems>
+            <field>Type</field>
+            <operation>equals</operation>
+            <value>Knowledge</value>
+        </criteriaItems>
+    </sharingGuestRules>
+</SharingRules>

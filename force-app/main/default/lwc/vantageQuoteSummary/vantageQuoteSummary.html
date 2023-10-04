@@ -1,0 +1,43 @@
+<template>
+    <lightning-card title="Quote Summary" icon-name="standard:quotes">
+        <div class="slds-p-horizontal_small">
+            <template lwc:if={summary}>
+                <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak">Amount</dt>
+                    <dd class="slds-item_detail"><lightning-formatted-number value={summary.amount} format-style="currency" currency-code="USD"></lightning-formatted-number></dd>
+                    <dt class="slds-item_label slds-text-color_weak">Stage</dt>
+                    <dd class="slds-item_detail">{summary.stage}</dd>
+                    <dt class="slds-item_label slds-text-color_weak">Term (months)</dt>
+                    <dd class="slds-item_detail">{summary.termMonths}</dd>
+                    <dt class="slds-item_label slds-text-color_weak">Quotes</dt>
+                    <dd class="slds-item_detail">{summary.quoteCount}</dd>
+                </dl>
+                <template lwc:if={hasQuotes}>
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top_small">
+                        <thead>
+                            <tr>
+                                <th scope="col">Quote</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Discount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={summary.quotes} for:item="q">
+                                <tr key={q.quoteId}>
+                                    <td>{q.name}</td>
+                                    <td>{q.status}</td>
+                                    <td><lightning-formatted-number value={q.totalPrice} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                    <td>{q.discountPct}%</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+            </template>
+            <template lwc:if={error}>
+                <p class="slds-text-color_error">{error}</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

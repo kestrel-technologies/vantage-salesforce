@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="Pipeline Board" icon-name="standard:opportunity">
+        <template lwc:if={error}>
+            <p class="slds-p-horizontal_small slds-text-color_error">{error}</p>
+        </template>
+        <div class="board slds-p-horizontal_small">
+            <template for:each={columns} for:item="col">
+                <section key={col.stage} class="column">
+                    <header class="column-header">
+                        <h2 class="slds-text-heading_small">{col.label}</h2>
+                        <p class="slds-text-body_small slds-text-color_weak">
+                            {col.count} deals ·
+                            <lightning-formatted-number value={col.total} format-style="currency" currency-code="USD" maximum-fraction-digits="0"></lightning-formatted-number>
+                        </p>
+                    </header>
+                    <template for:each={col.cards} for:item="card">
+                        <article key={card.id} class="card slds-box slds-box_x-small">
+                            <a href={card.url} class="slds-text-link">{card.name}</a>
+                            <p class="slds-text-body_small">{card.accountName}</p>
+                            <p class="slds-text-body_small">
+                                <lightning-formatted-number value={card.amount} format-style="currency" currency-code="USD" maximum-fraction-digits="0"></lightning-formatted-number>
+                                · <lightning-formatted-date-time value={card.closeDate}></lightning-formatted-date-time>
+                            </p>
+                            <p class="slds-text-body_small slds-text-color_weak">{card.ownerName}</p>
+                        </article>
+                    </template>
+                </section>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -23,17 +23,27 @@ Opportunity, Case, Product2, Quote and Contract. It is the upsert key for integr
 |---|---|---|---|
 | Lead, Account | `Region__c` | Picklist | AMER, EMEA, APAC. Drives SDR and support queue routing. |
 | Lead, Account | `Segment__c` | Picklist | Enterprise, Mid-Market. |
+| Lead | `Pulsar_Lead_Id__c` | Text(40), External ID | Pulsar's id (`plsr_…`) for Web and Pulsar Nurture leads. |
+| Account | `Billing_Status__c` | Picklist | Not Invoiced (default), Invoiced, Paid, Past Due, On Hold. Mirrored from Finance. |
+| Account | `Customer_Since__c` | Date | Close date of the first Closed Won opportunity. |
 | Opportunity | `SE_Owner__c` | Lookup(User) | Solutions Engineer. Required from Solution Design. |
 | Opportunity | `Legal_Review_Status__c` | Picklist | Not Required (default), Pending, Approved, Rejected. |
 | Opportunity | `Contract_Term_Months__c` | Number(3,0) | Default 36. Copied to the Contract. |
 | Opportunity | `Provisioning_Request__c` | Lookup(Provisioning_Request__c) | Set on Closed Won. |
+| Opportunity | `Discount_Approval__c` | Picklist | Approval state of the synced quote, for pipeline reviews. |
+| Quote | `Discount_Approval__c` | Picklist | Not Required (default), Requested, Approved, Rejected. |
+| Quote | `Total_Discount_Pct__c` | Formula (Percent) | `IF(Subtotal > 0, (Subtotal - TotalPrice) / Subtotal, 0)` |
+| Quote | `Platform_Discount_Applied__c` | Checkbox | Set by the pricing service. |
+| Quote | `Services_Attach_Discount_Applied__c` | Checkbox | Set by the pricing service. |
 | Case | `Product_Area__c` | Picklist | Data Cloud, Connect, Insight, Guard, Expert Services, Managed Operations, Academy, Portal & Account. |
 | Case | `Perch_Ticket__c` | Text(20) | Engineering ticket when escalated past L2 (e.g. `VNT-1234`). |
+| Case | `AI_Summary__c` | Long Text(2000) | Generated case summary; read-only on layouts. |
 | Case | `SLA_Response_Due__c`, `SLA_Resolution_Due__c` | DateTime | From Priority (P1 1h/8h, P2 4h/24h, P3 8h/72h, P4 24h/120h). |
 | Case | `SLA_Breached__c` | Checkbox | A due date passed while the case was open. |
 | Case | `Escalated_At__c` | DateTime | Stamped when Status moves to Escalated. |
 | Case | `SKY_Case_Notes__c` | Rich Text | Skyward-era case notes; shown by the `skyCaseNotes` component. |
 | Contract | `Opportunity__c` | Lookup(Opportunity) | The opportunity that created the contract. |
+| Product2 | `Pricing_Model__c` | Picklist | Subscription, Consumption, Add-on, Hours, Fixed Fee, Seat. |
 
 ## Picklists that replace the platform defaults
 

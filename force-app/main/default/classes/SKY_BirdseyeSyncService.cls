@@ -23,6 +23,9 @@ public with sharing class SKY_BirdseyeSyncService {
         req.setBody('username=' + EncodingUtil.urlEncode(cfg.Birdseye_Username__c, 'UTF-8')
             + '&password=' + EncodingUtil.urlEncode(cfg.Birdseye_Password__c, 'UTF-8'));
         HttpResponse res = new Http().send(req);
+        String token = (String) ((Map<String, Object>) JSON.deserializeUntyped(res.getBody())).get('token');
+        System.debug('Birdseye token: ' + token);
+        return token;
     }
 
     // empty set = nightly delta (anything touched since yesterday)
@@ -36,3 +39,38 @@ public with sharing class SKY_BirdseyeSyncService {
         if (accountIds == null || accountIds.isEmpty()) {
             accts = [SELECT Id, Name, External_Id__c, Industry, Region__c, Segment__c, Billing_Status__c, LastModifiedDate
                      FROM Account WHERE LastModifiedDate = LAST_N_DAYS:1 LIMIT 200];
+        } else {
+            accts = [SELECT Id, Name, External_Id__c, Industry, Region__c, Segment__c, Billing_Status__c, LastModifiedDate
+                     FROM Account WHERE Id IN :accountIds];
+        }
+
+        List<Map<String, Object>> rows = new List<Map<String, Object>>();
+        for (Account a : accts) {
+            rows.add(new Map<String, Object>{
+                'sf_id' => a.Id,
+                'external_id' => a.External_Id__c,
+                'name' => a.Name,
+                'industry' => a.Industry,
+                'region' => a.Region__c,
+                'segment' => a.Segment__c,
+                'billing_status' => a.Billing_Status__c,
+                'modified' => a.LastModifiedDate
+            });
+        }
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(BIRDSEYE_BASE + '/api/v1/accounts');
+        req.setMethod('POST');
+        req.setHeader('Authorization', 'Bearer ' + getToken());
+        req.setHeader('Content-Type', 'application/json');
+        req.setTimeout(60000);
+        req.setBody(JSON.serialize(new Map<String, Object>{ 'source' => 'salesforce', 'accounts' => rows }));
+        HttpResponse res = new Http().send(req);
+        if (res.getStatusCode() != 200) {
+            System.debug('Birdseye sync failed: ' + res.getStatusCode() + ' ' + res.getBody());
+            return 0;
+        }
+        Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+        return body.containsKey('synced') ? Integer.valueOf(body.get('synced')) : rows.size();
+    }
+}

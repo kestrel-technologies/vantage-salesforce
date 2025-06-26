@@ -79,6 +79,11 @@ Internal and external sharing: Private.
 | `Requested_Go_Live__c` | Date | Close date + 30 days. |
 | `External_Id__c` | Text(40), External ID | |
 
+### `SKY_Legacy_Integration_Config__c` (custom setting, hierarchy)
+
+Skyward-era settings read by `SKY_BirdseyeSyncService` for the Birdseye integration. Fields:
+`Birdseye_Username__c`, `Birdseye_Password__c` (Text 80). Values are org data maintained by Sales Ops in
+Setup → Custom Settings and are not kept in this repository.
 
 ## Sharing (internal / external)
 

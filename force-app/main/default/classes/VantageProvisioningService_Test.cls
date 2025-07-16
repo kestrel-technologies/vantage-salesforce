@@ -66,4 +66,45 @@ private class VantageProvisioningService_Test {
         System.assertEquals(1, [SELECT COUNT() FROM Contract WHERE Opportunity__c = :opp.Id]);
         System.assertEquals(1, [SELECT COUNT() FROM Task WHERE WhatId = :opp.Id]);
     }
+
+    // Opportunity_Stage_Gates
+    @IsTest static void stageGatesBlockMissingSeOwnerAndSyncedQuote() {
+        Account a = TestDataFactory.insertAccount('Gate Test Co', 'AMER');
+        Opportunity opp = TestDataFactory.newOpportunity(a.Id, 'Gate Test Opp', 'Discovery');
+        insert opp;
+        try {
+            update new Opportunity(Id = opp.Id, StageName = 'Solution Design');
+            System.assert(false, 'missing SE owner should block Solution Design');
         } catch (DmlException e) {
+            System.assert(e.getMessage().contains('Assign a Solutions Engineer'), e.getMessage());
+        }
+        update new Opportunity(Id = opp.Id, StageName = 'Solution Design', SE_Owner__c = UserInfo.getUserId());
+        try {
+            update new Opportunity(Id = opp.Id, StageName = 'Proposal/Quote');
+            System.assert(false, 'missing synced quote should block Proposal/Quote');
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains('Sync a Quote'), e.getMessage());
+        }
+    }
+
+    @IsTest static void stageGatesRequireLegalApprovalOverThreshold() {
+        Map<String, PricebookEntry> entries = TestDataFactory.insertProducts(new Map<String, Decimal>{ 'VDC-ENTP' => 900000 });
+        Id pbId = Test.getStandardPricebookId();
+        Account a = TestDataFactory.insertAccount('Legal Gate Co', 'APAC');
+        Opportunity opp = TestDataFactory.newOpportunity(a.Id, 'Big Deal', 'Proposal/Quote');
+        opp.SE_Owner__c = UserInfo.getUserId();
+        opp.Pricebook2Id = pbId;
+        insert opp;
+        Quote q = TestDataFactory.insertQuote(opp.Id, pbId);
+        insert TestDataFactory.newQuoteLine(q.Id, entries.get('VDC-ENTP'), 1);
+        update new Opportunity(Id = opp.Id, SyncedQuoteId = q.Id);
+        try {
+            update new Opportunity(Id = opp.Id, StageName = 'Negotiation');
+            System.assert(false, 'deal over 250k without legal approval should be blocked');
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains('Legal review must be Approved'), e.getMessage());
+        }
+        update new Opportunity(Id = opp.Id, StageName = 'Negotiation', Legal_Review_Status__c = 'Approved');
+        System.assertEquals('Negotiation', [SELECT StageName FROM Opportunity WHERE Id = :opp.Id].StageName);
+    }
+}

@@ -50,3 +50,16 @@ private class VantageCaseSlaService_Test {
     }
 
     @IsTest static void escalationMovesCaseToL2AndPriorityChangeResetsSla() {
+        Case c = new Case(Subject = 'Data loss', Origin = 'Phone', Priority = 'P3', Product_Area__c = 'Guard', Status = 'Working');
+        insert c;
+        Test.startTest();
+        update new Case(Id = c.Id, Status = 'Escalated');
+        update new Case(Id = c.Id, Priority = 'P1');
+        Test.stopTest();
+
+        Case saved = [SELECT OwnerId, Escalated_At__c, CreatedDate, SLA_Resolution_Due__c FROM Case WHERE Id = :c.Id];
+        System.assertEquals(TestDataFactory.queueId('L2_Escalations'), saved.OwnerId);
+        System.assertNotEquals(null, saved.Escalated_At__c);
+        System.assertEquals(saved.CreatedDate.addHours(8), saved.SLA_Resolution_Due__c);
+    }
+}

@@ -78,3 +78,19 @@ private class VantageQuotePricingService_Test {
         insert li;
         try {
             update new Quote(Id = quote.Id, Status = 'Presented');
+            System.assert(false, 'validation rule should block presenting an unapproved 30% discount');
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains('Regional Sales Director'), e.getMessage());
+        }
+        update new Quote(Id = quote.Id, Discount_Approval__c = 'Approved', Status = 'Presented');
+        System.assertEquals('Presented', [SELECT Status FROM Quote WHERE Id = :quote.Id].Status);
+    }
+
+    @IsTest static void emptyAndRepeatedCallsAreNoOps() {
+        VantageQuotePricingService.reprice(new List<Id>{ null });
+        setup();
+        VantageQuotePricingService.reprice(new List<Id>{ quote.Id });
+        VantageQuotePricingService.reprice(new List<Id>{ quote.Id });
+        System.assert(![SELECT Platform_Discount_Applied__c FROM Quote WHERE Id = :quote.Id].Platform_Discount_Applied__c);
+    }
+}

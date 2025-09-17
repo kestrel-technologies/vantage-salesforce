@@ -216,3 +216,28 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Renewal</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Services_Only</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <loginIpRanges>
+        <description>Kestrel office egress</description>
+        <endAddress>203.0.113.255</endAddress>
+        <startAddress>203.0.113.0</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Kestrel VPN pool</description>
+        <endAddress>198.51.100.255</endAddress>
+        <startAddress>198.51.100.0</startAddress>
+    </loginIpRanges>
+    <loginIpRanges>
+        <description>Kestrel VPN (US-West)</description>
+        <endAddress>192.0.2.255</endAddress>
+        <startAddress>192.0.2.0</startAddress>
+    </loginIpRanges>
+</Profile>

@@ -1,0 +1,51 @@
+# Flightpath CI (Flightpath §4, KES-DEV-4): validation deploy of force-app to the org that matches
+# the target branch (develop -> vantage-dev, uat -> vantage-uat, main -> vantage-prod), all local
+# tests, then the per-class coverage gate. Authenticates as the CorpEng Platform Automation
+# connected app (JWT bearer; ENTSEC-EXC-1077). Nothing is deployed here; see deploy.yml.
+name: ci
+on:
+  pull_request: { branches: [develop, uat, main] }
+  push: { branches: [develop, uat, main] }
+permissions: { contents: read, checks: write }
+jobs:
+  validate:
+    name: ci
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push'
+    env:
+      HAS_ORG_CREDENTIALS: ${{ secrets.SF_JWT_KEY != '' }}
+    steps:
+      - name: Check org credentials
+        if: env.HAS_ORG_CREDENTIALS != 'true'
+        run: |
+          echo "::warning title=ci::org credentials not configured; validation skipped"
+          exit 0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+        with: { node-version: 20 }
+      - run: npm install -g @salesforce/cli@2.67.7
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+      - name: Pick target org from base branch
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+        run: |
+          case "${{ github.base_ref || github.ref_name }}" in
+            develop) echo "ENV=dev"  >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_DEV }}"  >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-dev.kestrel.example"  >> $GITHUB_ENV ;;
+            uat)     echo "ENV=uat"  >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_UAT }}"  >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-uat.kestrel.example"  >> $GITHUB_ENV ;;
+            main)    echo "ENV=prod" >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_PROD }}" >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-prod.kestrel.example" >> $GITHUB_ENV ;;
+          esac
+      - run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+      - run: sf org login jwt --username "$SF_USERNAME" --jwt-key-file server.key --client-id "$CLIENT_ID" --instance-url "https://kestrelvantage-$ENV.my.salesforce.com" --alias "vantage-$ENV" && rm server.key
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+      - run: sf project deploy validate --source-dir force-app --target-org "vantage-$ENV" --test-level RunLocalTests --coverage-formatters json --results-dir .sf-results --wait 30
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+      - name: Per-class coverage gate (KES-DEV-4, 85%)
+        if: env.HAS_ORG_CREDENTIALS == 'true'
+        run: python3 .github/scripts/coverage_gate.py .sf-results 85   # exits non-zero on main/uat, warns on develop
+        env:
+          TARGET_BRANCH: ${{ github.base_ref || github.ref_name }}

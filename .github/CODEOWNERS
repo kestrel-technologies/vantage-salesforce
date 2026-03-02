@@ -1,0 +1,10 @@
+# Code owners (Flightpath §5). Later lines win.
+force-app/**                                         @kestrel-technologies/vantage-eng
+force-app/main/default/profiles/**                   @kestrel-technologies/corpeng-crm
+force-app/main/default/permissionsets/**             @kestrel-technologies/corpeng-crm
+force-app/main/default/connectedApps/**              @kestrel-technologies/corpeng-crm
+force-app/main/default/sharingRules/**               @kestrel-technologies/corpeng-crm
+force-app/main/default/settings/**                   @kestrel-technologies/corpeng-crm
+force-app/main/default/sites/**                      @kestrel-technologies/corpeng-crm
+force-app/main/default/experiences/**                @kestrel-technologies/corpeng-crm
+force-app/main/default/flows/**                      @kestrel-technologies/vantage-bizsys

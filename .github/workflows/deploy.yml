@@ -1,0 +1,38 @@
+# Flightpath deploy (Flightpath §4): on merge to develop / uat / main, deploy force-app to the
+# matching org with all local tests. Paused while the repository variable
+# FLIGHTPATH_DEPLOY_ENABLED is not 'true' (deploy freeze under a CHG ticket, Flightpath "Deploy
+# freezes"); runs then show as skipped and deploys resume in order when the freeze lifts.
+name: deploy
+on:
+  push: { branches: [develop, uat, main] }
+permissions: { contents: read }
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  freeze-notice:
+    runs-on: ubuntu-latest
+    if: vars.FLIGHTPATH_DEPLOY_ENABLED != 'true'
+    steps:
+      - run: echo "::notice title=deploy skipped::deploy paused (FLIGHTPATH_DEPLOY_ENABLED is not true)"
+  deploy:
+    runs-on: ubuntu-latest
+    if: vars.FLIGHTPATH_DEPLOY_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with: { node-version: 20 }
+      - run: npm install -g @salesforce/cli@2.67.7
+      - name: Pick target org from branch
+        run: |
+          case "${{ github.ref_name }}" in
+            develop) echo "ENV=dev"  >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_DEV }}"  >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-dev.kestrel.example"  >> $GITHUB_ENV ;;
+            uat)     echo "ENV=uat"  >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_UAT }}"  >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-uat.kestrel.example"  >> $GITHUB_ENV ;;
+            main)    echo "ENV=prod" >> $GITHUB_ENV; echo "CLIENT_ID=${{ secrets.SF_CLIENT_ID_PROD }}" >> $GITHUB_ENV
+                     echo "SF_USERNAME=jon.licht@vantage-prod.kestrel.example" >> $GITHUB_ENV ;;
+          esac
+      - run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
+      - run: sf org login jwt --username "$SF_USERNAME" --jwt-key-file server.key --client-id "$CLIENT_ID" --instance-url "https://kestrelvantage-$ENV.my.salesforce.com" --alias "vantage-$ENV" && rm server.key
+      - run: sf project deploy start --source-dir force-app --target-org "vantage-$ENV" --test-level RunLocalTests --wait 60

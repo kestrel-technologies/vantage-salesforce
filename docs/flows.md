@@ -22,3 +22,5 @@ why in its Description and get code-owner approval (KES-DEV-6 §4).
 - No hard-coded record Ids: queues are resolved by developer name.
 - Record-triggered Flows on the same object set an explicit trigger order.
 - Inactive versions beyond the two most recent are deleted at each sprint promotion (KES-DEV-6 §6).
+
+Last reviewed: 2026-09-21 (sprint 2026-38), Mikael Lindqvist.

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>62.0</apiVersion>
+    <apiVersion>68.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Pipeline Board</masterLabel>
-    <description>Open pipeline by stage (Vantage Sales app tab).</description>
+    <description>Open pipeline by stage.</description>
     <targets>
         <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
         <target>lightning__Tab</target>
     </targets>
 </LightningComponentBundle>

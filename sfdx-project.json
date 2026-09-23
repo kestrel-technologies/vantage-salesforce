@@ -1,12 +1,9 @@
 {
   "packageDirectories": [
-    {
-      "path": "force-app",
-      "default": true
-    }
+    { "path": "force-app/main", "default": true }
   ],
   "name": "vantage-salesforce",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "60.0"
+  "sourceApiVersion": "68.0"
 }

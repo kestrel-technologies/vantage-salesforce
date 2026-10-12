@@ -24,7 +24,7 @@ sets, connected apps and sharing, Vantage Business Systems for Flows. See `.gith
 |---|---|
 | `ci` (`.github/workflows/ci.yml`) | Validation deploy to the org matching the target branch, `RunLocalTests`, per-class coverage gate (85%, KES-DEV-4). |
 | `flightpath/reviewer` | Automated KES review of every CL; posts one verdict comment. Advisory on `main` until Q1 2027. |
-| `deploy` (`.github/workflows/deploy.yml`) | Deploys a merged branch to its org. Paused while `FLIGHTPATH_DEPLOY_ENABLED` is not `true` (deploy freeze); runs then show as skipped. |
+| `deploy` (`.github/workflows/deploy.yml`) | Deploys a merged branch to its org. **Paused: deploy freeze CHG-2410** (KSS assessment of `vantage-prod`); runs show as skipped. |
 
 CI signs in with the CorpEng Platform Automation connected app (JWT bearer). Actions secrets:
 `SF_JWT_KEY`, `SF_CLIENT_ID_DEV`, `SF_CLIENT_ID_UAT`, `SF_CLIENT_ID_PROD`. Repository variable:

@@ -22,6 +22,16 @@ reproduced in a CL within five business days (KES-DEV-3).
 5. Sprint promotion (every second Tuesday): CL `develop → uat`, then after UAT sign-off `uat → main`, title
    `chore(release): promote develop -> uat -> main (sprint YYYY-WW) [CHG-…]`, with an entry in `CHANGELOG.md`.
 
+## Deploy freeze
+
+Automatic deploys are paused while the repository variable `FLIGHTPATH_DEPLOY_ENABLED` is not `true`.
+**Current freeze: CHG-2410**, for the duration of the KSS assessment of `vantage-prod`. During the freeze:
+
+- `ci` still validates every CL; CLs still merge.
+- `deploy` runs show **skipped** ("deploy paused during KSS assessment freeze (CHG-2410)").
+- A merged CL is not Done until it is deployed (Flightpath §7). Deploys resume in branch order when
+  CorpEng Release Engineering lifts the freeze.
+
 ## Validate locally (read-only against the org)
 
 ```bash

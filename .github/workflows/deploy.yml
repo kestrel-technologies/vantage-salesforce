@@ -1,7 +1,7 @@
 # Flightpath deploy (Flightpath §4): on merge to develop / uat / main, deploy force-app to the
 # matching org with all local tests. Paused while the repository variable
-# FLIGHTPATH_DEPLOY_ENABLED is not 'true' (deploy freeze under a CHG ticket, Flightpath "Deploy
-# freezes"); runs then show as skipped and deploys resume in order when the freeze lifts.
+# FLIGHTPATH_DEPLOY_ENABLED is not 'true' (deploy freeze CHG-2410, KSS assessment of vantage-prod);
+# runs then show as skipped and deploys resume in order when the freeze lifts.
 name: deploy
 on:
   push: { branches: [develop, uat, main] }
@@ -14,8 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     if: vars.FLIGHTPATH_DEPLOY_ENABLED != 'true'
     steps:
-      - run: echo "::notice title=deploy skipped::deploy paused (FLIGHTPATH_DEPLOY_ENABLED is not true)"
+      - run: echo "::notice title=deploy skipped::deploy paused during KSS assessment freeze (CHG-2410)"
   deploy:
+    name: deploy (paused during KSS assessment freeze, CHG-2410)
     runs-on: ubuntu-latest
     if: vars.FLIGHTPATH_DEPLOY_ENABLED == 'true'
     steps:

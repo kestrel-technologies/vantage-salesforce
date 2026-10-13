@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <customErrors>
+        <name>Error_SE_Owner</name>
+        <label>Error SE Owner</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <customErrorMessages>
+            <errorMessage>Assign a Solutions Engineer (SE Owner) before Solution Design.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_Synced_Quote</name>
+        <label>Error Synced Quote</label>
+        <locationX>182</locationX>
+        <locationY>503</locationY>
+        <customErrorMessages>
+            <errorMessage>Sync a Quote before Proposal/Quote.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_Legal_Review</name>
+        <label>Error Legal Review</label>
+        <locationX>314</locationX>
+        <locationY>611</locationY>
+        <customErrorMessages>
+            <errorMessage>Legal review must be Approved for deals over $250k.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Check_SE_Owner</name>
+        <label>Check SE Owner</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <defaultConnector>
+            <targetReference>Check_Synced_Quote</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>SE_Owner_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fxGateSeOwner</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_SE_Owner</targetReference>
+            </connector>
+            <label>SE Owner Missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Synced_Quote</name>
+        <label>Check Synced Quote</label>
+        <locationX>314</locationX>
+        <locationY>395</locationY>
+        <defaultConnector>
+            <targetReference>Check_Legal_Review</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Synced_Quote_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fxGateSyncedQuote</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_Synced_Quote</targetReference>
+            </connector>
+            <label>Synced Quote Missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Legal_Review</name>
+        <label>Check Legal Review</label>
+        <locationX>446</locationX>
+        <locationY>503</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Legal_Review_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fxGateLegalReview</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_Legal_Review</targetReference>
+            </connector>
+            <label>Legal Review Missing</label>
+        </rules>
+    </decisions>
+    <description>Owner: Vantage Sales Systems · Tested: see Flow_Tests/ · Blocks stage changes that skip the deal-governance gates: SE Owner from Solution Design, a synced Quote from Proposal/Quote, Legal Review Approved from Negotiation for deals over $250k. Inserts are not gated.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>fxGateSeOwner</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(OR(TEXT({!$Record.StageName}) = 'Solution Design', TEXT({!$Record.StageName}) = 'Proposal/Quote', TEXT({!$Record.StageName}) = 'Negotiation', TEXT({!$Record.StageName}) = 'Closed Won'), ISBLANK({!$Record.SE_Owner__c}))</expression>
+    </formulas>
+    <formulas>
+        <name>fxGateSyncedQuote</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(OR(TEXT({!$Record.StageName}) = 'Proposal/Quote', TEXT({!$Record.StageName}) = 'Negotiation', TEXT({!$Record.StageName}) = 'Closed Won'), ISBLANK({!$Record.SyncedQuoteId}))</expression>
+    </formulas>
+    <formulas>
+        <name>fxGateLegalReview</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(OR(TEXT({!$Record.StageName}) = 'Negotiation', TEXT({!$Record.StageName}) = 'Closed Won'), {!$Record.Amount} &gt; 250000, TEXT({!$Record.Legal_Review_Status__c}) &lt;&gt; 'Approved')</expression>
+    </formulas>
+    <interviewLabel>Opportunity Stage Gates {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opportunity Stage Gates</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_SE_Owner</targetReference>
+        </connector>
+        <filterFormula>ISCHANGED({!$Record.StageName})</filterFormula>
+        <object>Opportunity</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

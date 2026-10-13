@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <actionCalls>
+        <name>Resolve_SDR_Queue</name>
+        <label>Resolve SDR Queue</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <actionName>VantageLeadRoutingService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Queue_Found</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>region</name>
+            <value>
+                <elementReference>$Record.Region__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>segment</name>
+            <value>
+                <elementReference>$Record.Segment__c</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>VantageLeadRoutingService</nameSegment>
+        <outputParameters>
+            <assignToReference>varQueueId</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <decisions>
+        <name>Has_Region</name>
+        <label>Has Region</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Region_Set</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Region__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Resolve_SDR_Queue</targetReference>
+            </connector>
+            <label>Region Set</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Queue_Found</name>
+        <label>Queue Found</label>
+        <locationX>50</locationX>
+        <locationY>503</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Queue_Resolved</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varQueueId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Lead_To_Queue</targetReference>
+            </connector>
+            <label>Queue Resolved</label>
+        </rules>
+    </decisions>
+    <description>Owner: Vantage Sales Systems · Tested: see Flow_Tests/ · Routes new leads (and queued leads whose Region/Segment change) to the SDR queue for their region and segment via VantageLeadRoutingService.resolveQueue. Manual leads owned by a user are left alone.</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead Routing {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead Routing</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Assign_Lead_To_Queue</name>
+        <label>Assign Lead To Queue</label>
+        <locationX>50</locationX>
+        <locationY>611</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>varQueueId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Has_Region</targetReference>
+        </connector>
+        <filterFormula>AND(NOT(AND(TEXT({!$Record.LeadSource}) = 'Manual', LEFT({!$Record.OwnerId}, 3) = '005')), OR(ISNEW(), AND(OR(ISCHANGED({!$Record.Region__c}), ISCHANGED({!$Record.Segment__c})), LEFT({!$Record.OwnerId}, 3) = '00G')))</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>varQueueId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

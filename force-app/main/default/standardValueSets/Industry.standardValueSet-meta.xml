@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Retail &amp; CPG</fullName>
+        <default>false</default>
+        <label>Retail &amp; CPG</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Logistics &amp; Transportation</fullName>
+        <default>false</default>
+        <label>Logistics &amp; Transportation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Financial Services</fullName>
+        <default>false</default>
+        <label>Financial Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Healthcare Providers &amp; Payers</fullName>
+        <default>false</default>
+        <label>Healthcare Providers &amp; Payers</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Manufacturing</fullName>
+        <default>false</default>
+        <label>Manufacturing</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Media</fullName>
+        <default>false</default>
+        <label>Media</label>
+    </standardValue>
+</StandardValueSet>

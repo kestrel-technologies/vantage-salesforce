@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SamlSsoConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <attributeName></attributeName>
+    <identityLocation>SubjectNameId</identityLocation>
+    <identityMapping>FederationId</identityMapping>
+    <issuer>https://sso.kestrel.example</issuer>
+    <loginUrl>https://sso.kestrel.example/saml/login</loginUrl>
+    <logoutUrl>https://sso.kestrel.example/saml/logout</logoutUrl>
+    <name>Kestrel SSO (Flock)</name>
+    <redirectBinding>true</redirectBinding>
+    <requestSignatureMethod>RSA-SHA256</requestSignatureMethod>
+    <requestSigningCertId>000000000000000</requestSigningCertId>
+    <samlEntityId>https://orgfarm-43fe361879-dev-ed.develop.my.salesforce.com</samlEntityId>
+    <samlVersion>SAML2_0</samlVersion>
+    <userProvisioning>false</userProvisioning>
+    <validationCert>MIIDbDCCAlSgAwIBAgIUCUftxWUMdhWBHej/PUNlEBmcNn0wDQYJKoZIhvcNAQELBQAwVjEcMBoGA1UEAwwTc3NvLmtlc3RyZWwuZXhhbXBsZTEdMBsGA1UECgwUS2VzdHJlbCBUZWNobm9sb2dpZXMxFzAVBgNVBAsMDkZsb2NrIElkZW50aXR5MB4XDTI2MTAxNTEzMzE0OFoXDTI5MTAxNDEzMzE0OFowVjEcMBoGA1UEAwwTc3NvLmtlc3RyZWwuZXhhbXBsZTEdMBsGA1UECgwUS2VzdHJlbCBUZWNobm9sb2dpZXMxFzAVBgNVBAsMDkZsb2NrIElkZW50aXR5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAid+lflRTw8BFw5BeKCTal72DeRFxwqFWD7s9kEz1sTa8IX6IKVLT/8V7Q93LoOHwfVVlqR79CCVls9snJGQEhQHjhHAuc2uY422eXiUIclAPGa4I84eFbbdGx2uEvc9Q7LazLh2VhFmvcQMhUHK594v0lBvsztXsCedX7lhSiM5//Hwg5Vo1K4xlIROaXGe7sMpckJd9ZkeMUMUWAWDnPM1Evad85RhoVPcpXfOQ3atiHbY6rGj/RS6GaB6Q+3VBPrd6u1p8VnAX3Kr93Bg+Jlk2kVTdYhLQ0IBzq87zG8dsNAa3eHvgnUIyYJDjQw6MEKWCMWyV5fgGOzrO8r5BLwIDAQABozIwMDAdBgNVHQ4EFgQUHSdnpSG5KdxFuZXVt2cmkMNsrAAwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEACtJxXzOt15uNTwqEVUhWbIBvL4VibDLClr4hqL04VWnsW02bWNPwNMwIFgoZGMaE1oEVeCxbsUWyMnboS6h9TQr+aArGA8+kqe6P6ur3on/NZo0kIsLZ/nb5x833m6bF1ZklDdlcG755t9B7MVVZA8o2hOurI9vVSAbHTReTacoN+G206Oz0av7bei/T46iXNH04M98TI8uCwvufuWCzlfknpEDHTO2rhT9zs4Lbwlx6FZ64TvnK8cSBq3xWvgP7mK9rSc8wr5v70tGYRGugagZRNIwHiQ8SIFk5HQiK2k4ND+YmPULNqM5jCOTU93fahQgGdolRJTIyng1IziIfxA==</validationCert>
+</SamlSsoConfig>

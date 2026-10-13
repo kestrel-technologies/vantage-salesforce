@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Data Cloud</fullName>
+        <default>false</default>
+        <label>Data Cloud</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Connect</fullName>
+        <default>false</default>
+        <label>Connect</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Insight</fullName>
+        <default>false</default>
+        <label>Insight</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Guard</fullName>
+        <default>false</default>
+        <label>Guard</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Expert Services</fullName>
+        <default>false</default>
+        <label>Expert Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Managed Operations</fullName>
+        <default>false</default>
+        <label>Managed Operations</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Academy</fullName>
+        <default>false</default>
+        <label>Academy</label>
+    </standardValue>
+</StandardValueSet>

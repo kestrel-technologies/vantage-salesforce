@@ -136,7 +136,7 @@
             <label>New Case</label>
         </rules>
     </decisions>
-    <description>Owner: Vantage Sales Systems · Tested: see Flow_Tests/ · Assigns new cases to the L1 queue for Product Area x Account region (no region = AMER), moves newly escalated cases to L2_Escalations with Escalated_At__c, and sets SLA due dates via VantageCaseSlaService.setDueDates.</description>
+    <description>Owner: Vantage Sales Systems · Tested: see Flow_Tests/ · Assigns new cases to the L1 queue for Product Area x Account region (no region = AMER), moves newly escalated cases to L2_Escalations with Escalated_At__c, and sets SLA due dates via VantageCaseSlaService.setDueDates. APAC web cases without a Product Area go to L1_Apps_INTL (Hyderabad, APAC hours) instead of L1_Services (SUP-1180).</description>
     <environments>Default</environments>
     <formulas>
         <name>fxRegionGroup</name>
@@ -146,7 +146,7 @@
     <formulas>
         <name>fxL1QueueName</name>
         <dataType>String</dataType>
-        <expression>CASE(TEXT({!$Record.Product_Area__c}), 'Data Cloud', 'L1_Platform_' &amp; {!fxRegionGroup}, 'Guard', 'L1_Platform_' &amp; {!fxRegionGroup}, 'Connect', 'L1_Apps_' &amp; {!fxRegionGroup}, 'Insight', 'L1_Apps_' &amp; {!fxRegionGroup}, 'L1_Services')</expression>
+        <expression>CASE(TEXT({!$Record.Product_Area__c}), 'Data Cloud', 'L1_Platform_' &amp; {!fxRegionGroup}, 'Guard', 'L1_Platform_' &amp; {!fxRegionGroup}, 'Connect', 'L1_Apps_' &amp; {!fxRegionGroup}, 'Insight', 'L1_Apps_' &amp; {!fxRegionGroup}, IF(AND(ISBLANK(TEXT({!$Record.Product_Area__c})), TEXT({!$Record.Origin}) = 'Web', TEXT({!$Record.Account.Region__c}) = 'APAC'), 'L1_Apps_INTL', 'L1_Services'))</expression>
     </formulas>
     <formulas>
         <name>fxIsNewEscalation</name>

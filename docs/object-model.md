@@ -39,7 +39,7 @@ Opportunity, Case, Product2, Quote and Contract. It is the upsert key for integr
 | Case | `Perch_Ticket__c` | Text(20) | Engineering ticket when escalated past L2 (e.g. `VNT-1234`). |
 | Case | `AI_Summary__c` | Long Text(2000) | Generated case summary; read-only on layouts. |
 | Case | `SLA_Response_Due__c`, `SLA_Resolution_Due__c` | DateTime | From Priority (P1 1h/8h, P2 4h/24h, P3 8h/72h, P4 24h/120h). |
-| Case | `SLA_Breached__c` | Checkbox | A due date passed while the case was open. |
+| Case | `SLA_Breached__c` | Checkbox | A due date passed while the case was open. Feeds the Q4 support SLA dashboard with `Escalated_At__c`. |
 | Case | `Escalated_At__c` | DateTime | Stamped when Status moves to Escalated. |
 | Case | `SKY_Case_Notes__c` | Rich Text | Skyward-era case notes; shown by the `skyCaseNotes` component. |
 | Contract | `Opportunity__c` | Lookup(Opportunity) | The opportunity that created the contract. |
@@ -81,9 +81,15 @@ Internal and external sharing: Private.
 
 ### `SKY_Legacy_Integration_Config__c` (custom setting, hierarchy)
 
-Skyward-era settings read by `SKY_BirdseyeSyncService` for the Birdseye integration. Fields:
-`Birdseye_Username__c`, `Birdseye_Password__c` (Text 80). Values are org data maintained by Sales Ops in
-Setup → Custom Settings and are not kept in this repository.
+Skyward-era settings read by `SKY_BirdseyeSyncService` for the Birdseye integration. Values are org data
+maintained by Sales Ops in Setup → Custom Settings and are not kept in this repository.
+
+| Field | Type | Notes |
+|---|---|---|
+| `Birdseye_Username__c` | Text(80) | Birdseye integration login. |
+| `Birdseye_Password__c` | Text(80) | Rotation is tracked in CHG-2412. |
+| `Birdseye_Base_URL__c` | Text(255) | Birdseye host; informational (the class has its own endpoint). |
+| `Sync_Enabled__c` | Checkbox | The nightly account sync does nothing while this is false. |
 
 ## Sharing (internal / external)
 
@@ -97,4 +103,6 @@ Parent · Provisioning Request Private / Private. Criteria-based sharing rules l
 Lead: `SDR_AMER_Enterprise`, `SDR_AMER_MidMarket`, `SDR_EMEA`, `SDR_APAC`.
 Case: `L1_Platform_AMER`, `L1_Platform_INTL` (Data Cloud, Guard), `L1_Apps_AMER`, `L1_Apps_INTL`
 (Connect, Insight), `L1_Services` (Expert Services, Managed Operations, Academy, Portal & Account),
-`L2_Escalations`.
+`L2_Escalations`. All L1 queues are staffed from Hyderabad; L2 is Austin. Routing rules: `docs/flows.md`.
+
+Last reviewed: 2026-11-24 (DOC-77, Q4 field refresh), Agnieszka Wójcik.

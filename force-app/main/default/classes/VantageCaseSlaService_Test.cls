@@ -49,6 +49,19 @@ private class VantageCaseSlaService_Test {
         System.assertEquals(TestDataFactory.queueId('L1_Services'), saved.get(services.Id).OwnerId);
     }
 
+    @IsTest static void routingFlowSendsApacWebCasesWithoutAreaToIntl() {
+        Account apac = TestDataFactory.insertAccount('Routing APAC Co', 'APAC');
+        Account amer = TestDataFactory.insertAccount('Routing AMER Co', 'AMER');
+        Case apacWeb = new Case(Subject = 'Portal login help', AccountId = apac.Id, Origin = 'Web', Priority = 'P3', Status = 'New');
+        Case apacPhone = new Case(Subject = 'Phone request', AccountId = apac.Id, Origin = 'Phone', Priority = 'P3', Status = 'New');
+        Case amerWeb = new Case(Subject = 'Portal question', AccountId = amer.Id, Origin = 'Web', Priority = 'P3', Status = 'New');
+        insert new List<Case>{ apacWeb, apacPhone, amerWeb };
+        Map<Id, Case> saved = new Map<Id, Case>([SELECT OwnerId FROM Case WHERE Id IN :new List<Id>{ apacWeb.Id, apacPhone.Id, amerWeb.Id }]);
+        System.assertEquals(TestDataFactory.queueId('L1_Apps_INTL'), saved.get(apacWeb.Id).OwnerId);
+        System.assertEquals(TestDataFactory.queueId('L1_Services'), saved.get(apacPhone.Id).OwnerId);
+        System.assertEquals(TestDataFactory.queueId('L1_Services'), saved.get(amerWeb.Id).OwnerId);
+    }
+
     @IsTest static void escalationMovesCaseToL2AndPriorityChangeResetsSla() {
         Case c = new Case(Subject = 'Data loss', Origin = 'Phone', Priority = 'P3', Product_Area__c = 'Guard', Status = 'Working');
         insert c;

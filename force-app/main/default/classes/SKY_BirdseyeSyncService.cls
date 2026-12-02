@@ -6,26 +6,29 @@
  *
  * Flow: POST /api/v1/token with the integration user stored in
  * SKY_Legacy_Integration_Config__c, then POST /api/v1/accounts with the
- * Bearer token. Remote Site: Birdseye_Legacy.
+ * Bearer token. Endpoint and API key come from the Birdseye_API Named
+ * Credential: its External Credential (Birdseye_Auth) adds the X-Api-Key
+ * header from the Birdseye_Service principal, so no key lives in this class.
+ * Running users need the Birdseye Named Principal Access permission set.
  * Birdseye depends on this. Talk to the Birdseye team before changing it.
  */
 public with sharing class SKY_BirdseyeSyncService {
-    // TODO move to config – Caleb 2019-04
-    private static final String BIRDSEYE_API_KEY = 'bse_live_7f3a9c2e41d84b06a9f1c3e2d5b7a890';
-    private static final String BIRDSEYE_BASE = 'https://birdseye.vantage.kestrel.example';
+    @TestVisible private static final String BIRDSEYE_API = 'callout:Birdseye_API';
+
+    public class BirdseyeException extends Exception {}
 
     public static String getToken() {
         SKY_Legacy_Integration_Config__c cfg = SKY_Legacy_Integration_Config__c.getOrgDefaults();
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(BIRDSEYE_BASE + '/api/v1/token');
+        req.setEndpoint(BIRDSEYE_API + '/api/v1/token');
         req.setMethod('POST');
-        req.setHeader('X-Api-Key', BIRDSEYE_API_KEY);
         req.setBody('username=' + EncodingUtil.urlEncode(cfg.Birdseye_Username__c, 'UTF-8')
             + '&password=' + EncodingUtil.urlEncode(cfg.Birdseye_Password__c, 'UTF-8'));
         HttpResponse res = new Http().send(req);
-        String token = (String) ((Map<String, Object>) JSON.deserializeUntyped(res.getBody())).get('token');
-        System.debug('Birdseye token: ' + token);
-        return token;
+        if (res.getStatusCode() != 200) {
+            throw new BirdseyeException('Birdseye token request failed: HTTP ' + res.getStatusCode());
+        }
+        return (String) ((Map<String, Object>) JSON.deserializeUntyped(res.getBody())).get('token');
     }
 
     // empty set = nightly delta (anything touched since yesterday)
@@ -59,7 +62,7 @@ public with sharing class SKY_BirdseyeSyncService {
         }
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(BIRDSEYE_BASE + '/api/v1/accounts');
+        req.setEndpoint(BIRDSEYE_API + '/api/v1/accounts');
         req.setMethod('POST');
         req.setHeader('Authorization', 'Bearer ' + getToken());
         req.setHeader('Content-Type', 'application/json');
